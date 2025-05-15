@@ -1,9 +1,10 @@
 
 import React, { useEffect, useState } from "react";
-import { Smartphone, Install } from "lucide-react";
+import { Smartphone, Download } from "lucide-react";
 
-const isMobile = () => typeof window !== "undefined" 
-  && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+const isMobile = () =>
+  typeof window !== "undefined" &&
+  /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 const PWAInstallPrompt: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -15,13 +16,13 @@ const PWAInstallPrompt: React.FC = () => {
       setDeferredPrompt(e);
       setShowPrompt(true);
     };
-    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener("beforeinstallprompt", handler);
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
   }, []);
 
   if (!showPrompt || !isMobile()) return null;
-  
+
   const onClick = async () => {
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
@@ -36,7 +37,7 @@ const PWAInstallPrompt: React.FC = () => {
         className="ml-3 flex items-center gap-1 bg-primary text-white px-3 py-1.5 rounded-md hover:bg-primary/90 transition"
         onClick={onClick}
       >
-        <Install size={18} />
+        <Download size={18} />
         Instalar
       </button>
     </div>
