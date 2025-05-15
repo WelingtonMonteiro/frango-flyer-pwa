@@ -29,7 +29,7 @@ export default function ListaAnuncios() {
     <div className="max-w-lg mx-auto py-6 px-2">
       <button
         className="mb-4 flex items-center text-blue-600"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
       >
         <ArrowLeft size={18} className="mr-1" /> Voltar
       </button>

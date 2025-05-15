@@ -34,7 +34,7 @@ export default function VisualizarAnuncio() {
     <div className="max-w-lg mx-auto py-7 px-4">
       <button
         className="mb-4 flex items-center text-blue-600"
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/")}
       >
         <ArrowLeft size={18} className="mr-1" /> Voltar
       </button>
