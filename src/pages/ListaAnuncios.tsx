@@ -17,7 +17,13 @@ type Anuncio = {
 
 export default function ListaAnuncios() {
   const navigate = useNavigate();
-  const [anuncios] = useStorage<Anuncio[]>("anuncios", []);
+  const [anuncios, setAnuncios] = useStorage<any[]>("anuncios", []);
+
+  function handleDelete(id: string) {
+    if (window.confirm("Tem certeza que deseja remover este anúncio?")) {
+      setAnuncios(anuncios.filter(a => a.id !== id));
+    }
+  }
 
   return (
     <div className="max-w-lg mx-auto py-6 px-2">
@@ -40,6 +46,8 @@ export default function ListaAnuncios() {
             key={a.id}
             anuncio={a}
             onClick={() => navigate(`/anuncio/${a.id}`)}
+            onEdit={() => navigate(`/editar-anuncio/${a.id}`)}
+            onDelete={() => handleDelete(a.id)}
           />
         ))
       )}

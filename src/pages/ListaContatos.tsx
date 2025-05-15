@@ -5,8 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 export default function ListaContatos() {
-  const [contatos] = useStorage<any[]>("contatos", []);
+  const [contatos, setContatos] = useStorage<any[]>("contatos", []);
   const navigate = useNavigate();
+
+  function handleDelete(id: string) {
+    if (window.confirm("Tem certeza que deseja remover este contato?")) {
+      setContatos(contatos.filter((c: any) => c.id !== id));
+    }
+  }
 
   return (
     <div className="max-w-lg mx-auto py-7 px-4">
@@ -25,7 +31,12 @@ export default function ListaContatos() {
         <p className="text-gray-400">Nenhum contato cadastrado.</p>
       ) : (
         contatos.map((c: any) => (
-          <ContatoCard key={c.id} contato={c} />
+          <ContatoCard
+            key={c.id}
+            contato={c}
+            onEdit={() => navigate(`/editar-contato/${c.id}`)}
+            onDelete={() => handleDelete(c.id)}
+          />
         ))
       )}
     </div>
