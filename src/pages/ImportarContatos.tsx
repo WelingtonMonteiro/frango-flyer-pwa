@@ -1,44 +1,50 @@
 
-import { useRef } from "react";
+import { useState } from "react";
 import { useStorage } from "@/hooks/useStorage";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft } from "lucide-react";
 
 export default function ImportarContatos() {
-  const fileInput = useRef<HTMLInputElement>(null);
   const [contatos, setContatos] = useStorage<any[]>("contatos", []);
+  const [arquivo, setArquivo] = useState<File | null>(null);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
-  function handleImport(e: React.FormEvent) {
-    e.preventDefault();
-    const file = fileInput.current?.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      try {
-        const data = JSON.parse(ev.target?.result as string);
-        if (Array.isArray(data)) {
-          setContatos([...data, ...contatos]);
-          toast({ title: "Contatos importados!" });
-          navigate("/contatos");
-        } else {
-          toast({ title: "Arquivo inválido", description: "O arquivo deve ser um array JSON", variant: "destructive" });
-        }
-      } catch {
-        toast({ title: "Erro ao importar arquivo", variant: "destructive" });
+  const handleImport = async () => {
+    if (!arquivo) return;
+    const text = await arquivo.text();
+    try {
+      const data = JSON.parse(text);
+      if (Array.isArray(data)) {
+        setContatos([...contatos, ...data]);
+        alert("Contatos importados com sucesso!");
+      } else {
+        alert("Arquivo inválido.");
       }
-    };
-    reader.readAsText(file);
-  }
+    } catch {
+      alert("Erro ao importar o arquivo.");
+    }
+  };
 
   return (
-    <div className="max-w-lg mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold mb-4">Importar Contatos</h1>
-      <form className="flex flex-col gap-3" onSubmit={handleImport}>
-        <input type="file" accept="application/json" required ref={fileInput} />
-        <button type="submit" className="mt-2 bg-primary text-white py-2 rounded">📥 Importar contatos</button>
-      </form>
+    <div className="max-w-lg mx-auto p-6">
+      <button
+        className="mb-4 flex items-center text-blue-600"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft size={18} className="mr-1" /> Voltar
+      </button>
+      <h1 className="text-2xl font-bold mb-3">Importar Contatos</h1>
+      <input
+        type="file"
+        accept="application/json"
+        onChange={e => setArquivo(e.target.files?.[0] ?? null)}
+        className="mb-4"
+      />
+      <button
+        className="bg-primary text-white px-4 py-2 rounded"
+        onClick={handleImport}
+        disabled={!arquivo}
+      >📥 Importar contatos</button>
     </div>
   );
 }

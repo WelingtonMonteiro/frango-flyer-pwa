@@ -2,33 +2,32 @@
 import { useStorage } from "@/hooks/useStorage";
 import ContatoCard from "@/components/ContatoCard";
 import { useNavigate } from "react-router-dom";
-
-type Contato = { id: string, nome: string, telefone: string };
+import { ArrowLeft } from "lucide-react";
 
 export default function ListaContatos() {
-  const [contatos, setContatos] = useStorage<Contato[]>("contatos", []);
+  const [contatos] = useStorage<any[]>("contatos", []);
   const navigate = useNavigate();
 
-  function handleDelete(id: string) {
-    setContatos(contatos.filter(c => c.id !== id));
-  }
-
   return (
-    <div className="max-w-lg mx-auto py-6 px-3">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Contatos</h1>
-        <button className="bg-primary text-white px-4 py-2 rounded" onClick={() => navigate("/adicionar-contato")}>+ Adicionar</button>
-      </div>
-      {contatos.length === 0 ?
-        <p className="text-gray-400">Nenhum contato cadastrado.</p> :
-        contatos.map((contato) => (
-          <ContatoCard key={contato.id} contato={contato} onDelete={() => handleDelete(contato.id)} />
+    <div className="max-w-lg mx-auto py-7 px-4">
+      <button
+        className="mb-4 flex items-center text-blue-600"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft size={18} className="mr-1" /> Voltar
+      </button>
+      <h1 className="text-2xl font-bold mb-4">Seus Contatos</h1>
+      <button
+        className="mb-4 bg-primary text-white rounded px-4 py-2"
+        onClick={() => navigate("/adicionar-contato")}
+      >+ Novo Contato</button>
+      {contatos.length === 0 ? (
+        <p className="text-gray-400">Nenhum contato cadastrado.</p>
+      ) : (
+        contatos.map((c: any) => (
+          <ContatoCard key={c.id} contato={c} />
         ))
-      }
-      <div className="mt-6 flex gap-2">
-        <button onClick={() => navigate("/exportar-contatos")} className="bg-blue-500 text-white rounded px-4 py-2">Exportar contatos</button>
-        <button onClick={() => navigate("/importar-contatos")} className="bg-green-500 text-white rounded px-4 py-2">Importar contatos</button>
-      </div>
+      )}
     </div>
   );
 }

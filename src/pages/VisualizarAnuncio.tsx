@@ -2,6 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useStorage } from "@/hooks/useStorage";
 import { ArrowLeft, Share2 } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
 
 export default function VisualizarAnuncio() {
   const { id } = useParams();
@@ -15,9 +16,28 @@ export default function VisualizarAnuncio() {
     `Hoje tem: ${anuncio.produto} por ${anuncio.preco}\nDas ${anuncio.hora_inicio} às ${anuncio.hora_fim}\n${anuncio.mensagem}`;
   const waUrl = "https://wa.me/?text=" + encodeURIComponent(txt);
 
+  const handleShare = (e: React.MouseEvent) => {
+    toast({
+      title: "Imagem não enviada automaticamente",
+      description:
+        "O WhatsApp não permite enviar imagens automaticamente por link. Apenas o texto será compartilhado. Se desejar, anexe a imagem manualmente.",
+      duration: 7000,
+    });
+    // Redireciona para o WhatsApp após pequeno delay para permitir leitura do toast
+    setTimeout(() => {
+      window.open(waUrl, "_blank");
+    }, 800);
+    e.preventDefault();
+  };
+
   return (
     <div className="max-w-lg mx-auto py-7 px-4">
-      <button className="mb-4 flex items-center text-blue-600" onClick={() => navigate("/anuncios")}><ArrowLeft size={18} className="mr-1" /> Voltar</button>
+      <button
+        className="mb-4 flex items-center text-blue-600"
+        onClick={() => navigate(-1)}
+      >
+        <ArrowLeft size={18} className="mr-1" /> Voltar
+      </button>
       <div className="bg-white rounded shadow p-4">
         {anuncio.imagem &&
           <img src={anuncio.imagem} className="w-full max-h-80 rounded-lg object-cover mb-2" alt={anuncio.produto} />
@@ -30,7 +50,7 @@ export default function VisualizarAnuncio() {
         </span>
         <a
           href={waUrl}
-          target="_blank"
+          onClick={handleShare}
           className="block bg-green-500 hover:bg-green-600 text-white font-bold py-3 mt-4 rounded flex justify-center items-center gap-2"
         ><Share2 size={20} /> Compartilhar via WhatsApp</a>
       </div>
